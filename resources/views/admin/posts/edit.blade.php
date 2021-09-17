@@ -50,6 +50,20 @@
             @enderror
 
         </div>
+
+        @foreach($tags as $tag)
+          <div class="form-check">
+            <input class="form-check-input" name="tags[]" type="checkbox" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" @if (is_array( old('tags') ) && in_array($tag->id, old('tags')) || $post->tags->contains($tag->id)) checked @endif>
+            <label class="form-check-label" for="tag-{{ $tag->id }}">
+              {{ $tag->name }}
+            </label>
+          </div>
+        @endforeach
+
+        @error('tags')
+          <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+
         <button type="submit" class="btn btn-primary">Submit</button>
     </form> 
 

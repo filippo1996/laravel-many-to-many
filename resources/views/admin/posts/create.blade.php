@@ -41,12 +41,25 @@
 
         </div>
         <div class="form-floating mb-3">
-            <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px">{{ old('content') }}</textarea>
-            <label for="floatingTextarea2">Comments</label>
+          <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px">{{ old('content') }}</textarea>
+          <label for="floatingTextarea2">Comments</label>
         </div>
 
         @error('content')
-            <div class="alert alert-danger">{{ $message }}</div>
+          <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
+
+        @foreach($tags as $tag)
+          <div class="form-check">
+            <input class="form-check-input" name="tags[]" type="checkbox" value="{{ $tag->id }}" id="tag-{{ $tag->id }}" @if (is_array( old('tags') ) && in_array($tag->id, old('tags'))) checked @endif>
+            <label class="form-check-label" for="tag-{{ $tag->id }}">
+              {{ $tag->name }}
+            </label>
+          </div>
+        @endforeach
+
+        @error('tags')
+          <div class="alert alert-danger">{{ $message }}</div>
         @enderror
 
         <button type="submit" class="btn btn-primary">Submit</button>

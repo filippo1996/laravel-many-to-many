@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -34,7 +35,8 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.posts.create',compact('categories'));
+        $tags = Tag::all();
+        return view('admin.posts.create',compact('categories','tags'));
     }
 
     /**
@@ -57,6 +59,10 @@ class PostController extends Controller
 
         if(!$save){
             App::abort(500, 'Error');
+        }
+
+        if(isset($data['tags'])){
+            $post->tags()->attach($data['tags']);
         }
 
         return redirect()->route('posts.show', $post->slug);
@@ -83,7 +89,8 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post','categories'));
+        $tags = Tag::all();
+        return view('admin.posts.edit', compact('post','categories','tags'));
     }
 
     /**
@@ -97,6 +104,16 @@ class PostController extends Controller
     {
         $data = $request->validated();
         //$data['slug'] = Str::slug($data['title'],'-');
+
+        if(isset($data['tags'])){
+
+            $post->tags()->sync($data['tags']);
+
+        } else{
+
+            $post->tags()->sync([]);
+        }
+
         $post->update($data);
 
         return redirect()->route('posts.index');
@@ -110,6 +127,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        // siccome abbiamo impostato sulla tabella post_tag onDelete('cascade)
+        // non serve inserire il metodo $user->tags()->detach([1, 2, 3]);
+        // perchè verrano eliminati automaticamente dalla tabella quando si elimina un post
         $post->delete();
 
         return redirect()->route('posts.index');

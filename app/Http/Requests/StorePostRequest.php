@@ -40,7 +40,8 @@ class StorePostRequest extends FormRequest
             'title' => 'bail|required|max:50',
             'slug' => 'unique:posts',
             'content' => 'required|max:5000',
-            'category_id' => 'bail|nullable|exists:categories,id'
+            'category_id' => 'bail|nullable|exists:categories,id',
+            'tags' => 'nullable'
         ];
     }
 }

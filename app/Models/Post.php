@@ -23,6 +23,14 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * The posts that belong to the tags.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
 
     /**
      * Get the route key for the model.
